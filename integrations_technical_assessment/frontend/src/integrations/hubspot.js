@@ -1,5 +1,3 @@
-// airtable.js
-
 import { useState, useEffect } from 'react';
 import {
     Box,
@@ -8,7 +6,7 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 
-export const AirtableIntegration = ({ user, org, integrationParams, setIntegrationParams }) => {
+export const HubspotIntegration = ({ user, org, integrationParams, setIntegrationParams }) => {
     const [isConnected, setIsConnected] = useState(false);
     const [isConnecting, setIsConnecting] = useState(false);
 
@@ -19,10 +17,10 @@ export const AirtableIntegration = ({ user, org, integrationParams, setIntegrati
             const formData = new FormData();
             formData.append('user_id', user);
             formData.append('org_id', org);
-            const response = await axios.post(`http://localhost:8000/integrations/airtable/authorize`, formData);
-            const authURL = response?.data;
+            const response = await axios.get(`http://localhost:8000/integrations/hubspot/authorize`,{ params: { user_id: user, org_id: org } });
+            const authURL = response?.data?.auth_url;
 
-            const newWindow = window.open(authURL, 'Airtable Authorization', 'width=600, height=600');
+            const newWindow = window.open(authURL, 'hubspot Authorization', 'width=600, height=600');
 
             // Polling for the window to close
             const pollTimer = window.setInterval(() => {
@@ -43,12 +41,12 @@ export const AirtableIntegration = ({ user, org, integrationParams, setIntegrati
             const formData = new FormData();
             formData.append('user_id', user);
             formData.append('org_id', org);
-            const response = await axios.post(`http://localhost:8000/integrations/airtable/credentials`, formData);
+            const response = await axios.get(`http://localhost:8000/integrations/hubspot/credentials`, { params: { user_id: user, org_id: org } });
             const credentials = response.data; 
             if (credentials) {
                 setIsConnecting(false);
                 setIsConnected(true);
-                setIntegrationParams(prev => ({ ...prev, credentials: credentials, type: 'Airtable' }));
+                setIntegrationParams(prev => ({ ...prev, credentials: credentials, type: 'Hubspot' }));
             }
             setIsConnecting(false);
         } catch (e) {
@@ -57,6 +55,7 @@ export const AirtableIntegration = ({ user, org, integrationParams, setIntegrati
         }
     }
 
+    // Reset connection state when integrationParams changes or is cleared
     useEffect(() => {
         setIsConnected(integrationParams?.credentials ? true : false);
         setIsConnecting(false);
@@ -77,7 +76,7 @@ export const AirtableIntegration = ({ user, org, integrationParams, setIntegrati
                         opacity: isConnected ? 1 : undefined
                     }}
                 >
-                    {isConnected ? 'Airtable Connected' : isConnecting ? <CircularProgress size={20} /> : 'Connect to Airtable'}
+                    {isConnected ? 'hubspot Connected' : isConnecting ? <CircularProgress size={20} /> : 'Connect to hubspot'}
                 </Button>
             </Box>
         </Box>
