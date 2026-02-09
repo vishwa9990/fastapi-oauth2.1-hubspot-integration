@@ -4,6 +4,8 @@ from typing import Optional, List
 class IntegrationItem:
     def __init__(
         self,
+        metadata: Optional[dict] = None,
+        source: Optional[str] = None,
         id: Optional[str] = None,
         type: Optional[str] = None,
         directory: bool = False,
@@ -14,13 +16,16 @@ class IntegrationItem:
         last_modified_time: Optional[datetime] = None,
         url: Optional[str] = None,
         children: Optional[List[str]] = None,
-        mime_type: Optional[str] = None,
-        delta: Optional[str] = None,
-        drive_id: Optional[str] = None,
+        title: Optional[str] = None,
         visibility: Optional[bool] = True,
+        external_id: Optional[str] = None
     ):
+        self.title = title
+        self.external_id = external_id
+        self.source = source
         self.id = id
         self.type = type
+        self.metadata = metadata
         self.directory = directory
         self.parent_path_or_name = parent_path_or_name
         self.parent_id = parent_id
@@ -29,7 +34,4 @@ class IntegrationItem:
         self.last_modified_time = last_modified_time
         self.url = url
         self.children = children
-        self.mime_type = mime_type
-        self.delta = delta
-        self.drive_id = drive_id
         self.visibility = visibility

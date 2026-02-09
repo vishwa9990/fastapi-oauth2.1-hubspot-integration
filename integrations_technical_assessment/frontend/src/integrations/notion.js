@@ -59,13 +59,13 @@ export const NotionIntegration = ({ user, org, integrationParams, setIntegration
     }
 
     useEffect(() => {
-        setIsConnected(integrationParams?.credentials ? true : false)
-    }, []);
+        setIsConnected(integrationParams?.credentials ? true : false);
+        setIsConnecting(false);
+    }, [integrationParams]);
 
     return (
         <>
         <Box sx={{mt: 2}}>
-            Parameters
             <Box display='flex' alignItems='center' justifyContent='center' sx={{mt: 2}}>
                 <Button 
                     variant='contained' 

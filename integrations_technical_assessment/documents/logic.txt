@@ -1,0 +1,34 @@
+Core Functionality Summary
+1. OAuth2 + PKCE Authentication Flow
+
+authorize_hubspot(): Starts the OAuth process by generating PKCE security parameters and creating an authorization URL that redirects users to HubSpot's login page
+oauth2callback_hubspot(): Handles the callback after user authorizes, exchanges the authorization code for access/refresh tokens, and stores them in Redis
+
+2. Token Management
+
+refresh_access_token(): Automatically refreshes expired access tokens using stored refresh tokens
+Tokens are stored in Redis with expiration times for security
+Implements proper token lifecycle management
+
+3. Data Integration
+
+create_integration_item_metadata_object(): Fetches contact data from HubSpot's CRM API
+get_items_hubspot(): Wrapper function that calls the above
+Transforms HubSpot contacts into standardized IntegrationItem objects
+
+Technical Flow
+User Request → authorize_hubspot() → HubSpot OAuth → oauth2callback_hubspot() 
+    ↓
+Store tokens in Redis → get_items_hubspot() → refresh_access_token() (if needed)
+    ↓
+Fetch HubSpot contacts → Transform to IntegrationItem → Return data
+
+
+1. User Browser  →  Your App: "Connect HubSpot"
+2. Your App      →  User Browser: "Go to HubSpot (with code_challenge)"
+3. User Browser  →  HubSpot: "User logs in and approves"
+4. HubSpot       →  User Browser: "Redirect back (with auth code)"
+5. User Browser  →  Your App: "Here's the auth code"
+6. Your App      →  HubSpot: "Trade code + code_verifier for tokens"
+7. HubSpot       →  Your App: "Here are your tokens"
+8. Your App      →  Redis: "Store tokens safely"
